@@ -1,0 +1,61 @@
+# Basic configuration for river segmentation/classification project
+
+# Data configurations
+data:
+  csv_file: "dataset/river.csv"
+  root_dir: "dataset"
+  augmentation: "combined"  # Options: base, geometric, semantic, combined
+  image_size: 128  # Use consistent size
+  batch_size: 16
+  
+# Model configurations
+model:
+  # Common parameters
+  encoder: "mobilenet_v3_large"
+  pretrained: true
+  
+  # Task-specific parameters
+  segmentation:
+    decoder: "deeplabv3"  # Options: unet, fpn, deeplabv3
+    num_classes: 1
+  
+  classification:
+    num_classes: 4  # low, medium, high, flood
+    use_mask_as_channel: false
+
+# Training configurations
+training:
+  batch_size: 16
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  num_epochs: 1
+  num_workers: 4
+  
+  # Advanced options
+  scheduler: "reduce_on_plateau"  # Options: reduce_on_plateau, cosine, none
+  scheduler_patience: 5
+  early_stopping: true
+  early_stop_patience: 10
+  
+  # Task-specific monitoring (will be automatically set by the validator)
+  segmentation:
+    monitor_metric: "dice"
+    monitor_mode: "max"
+  
+  classification:
+    monitor_metric: "accuracy"
+    monitor_mode: "max"
+
+# Evaluation configurations
+evaluation:
+  save_results: true
+  visualize: true
+  num_samples: 5
+  
+  # Task-specific settings (will be automatically set by the validator)
+  segmentation:
+    threshold: 0.5
+  
+  classification:
+    per_class_metrics: true
+    confusion_matrix: true
