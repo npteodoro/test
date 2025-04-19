@@ -1,7 +1,6 @@
 import torch
 import os
 import time
-from tqdm import tqdm
 
 class BaseEvaluator:
     """Base class for all evaluators"""

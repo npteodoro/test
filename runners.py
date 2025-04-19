@@ -1,11 +1,9 @@
 import torch
 import os
 import time
-from torch.utils.data import DataLoader
 from factories.model import create_model
 from factories.trainer import create_trainer
 from factories.evaluator import create_evaluator
-from utils.data import create_data_loader
 from utils.logger import setup_logger
 
 def run_experiment(args, config, device):
@@ -89,10 +87,25 @@ def save_model(model, args, config):
     os.makedirs(model_dir, exist_ok=True)
 
     encoder_type = config['model'].get('encoder', 'default')
-    decoder_type = config['model'].get('decoder', 'default') if args.task == 'segmentation' else ''
+    
+    # Handle different model types with different naming conventions
+    if args.task == 'segmentation':
+        decoder_type = config['model'].get('decoder', 'default')
+        model_part = f"{encoder_type}_{decoder_type}"
+    elif args.task == 'classification':
+        mask_method = config['model'].get('mask_method', 'none')
+        mask_str = f"_{mask_method}" if mask_method else ""
+        model_part = f"{encoder_type}{mask_str}"
+    elif args.task == 'combined':
+        decoder_type = config['model'].get('decoder', 'default')
+        mask_method = config['model'].get('mask_method', 'channel')
+        model_part = f"{encoder_type}_{decoder_type}_{mask_method}"
+    else:
+        model_part = encoder_type
+    
     timestamp = time.strftime("%Y%m%d-%H%M%S")
-
-    model_filename = f"{encoder_type}{'_' + decoder_type if decoder_type else ''}_{timestamp}.pth"
+    model_filename = f"{model_part}_{timestamp}.pth"
+    
     torch.save(model.state_dict(), os.path.join(model_dir, model_filename))
     print(f"Model saved to {os.path.join(model_dir, model_filename)}")
 

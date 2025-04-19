@@ -56,5 +56,21 @@ def validate_and_update_config(config, task_type):
                 config['model'] = {}
             config['data']['use_mask_as_channel'] = True
             config['model']['use_mask_as_channel'] = True
+
+    # Ensure consistency between model and data settings for mask methods
+    if task_type == 'classification':
+        # Ensure mask_method is consistent across config
+        mask_method = (
+            config.get('data', {}).get('mask_method', None) or 
+            config.get('model', {}).get('mask_method', None)
+        )
+        
+        if mask_method:
+            if 'data' not in config:
+                config['data'] = {}
+            if 'model' not in config:
+                config['model'] = {}
+            config['data']['mask_method'] = mask_method
+            config['model']['mask_method'] = mask_method
     
     return config

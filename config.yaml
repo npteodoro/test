@@ -21,7 +21,19 @@ model:
   
   classification:
     num_classes: 4  # low, medium, high, flood
-    use_mask_as_channel: false
+    mask_method: None  # Options: None, channel, attention, feature_weighting, region_focus, attention_layer
+    mask_weight: 0.5   # Weight for mask fusion methods
+    class_column: "level"  # Column name for classification labels
+
+  combined:
+    encoder: "mobilenet_v3_large"
+    decoder: "deeplabv3"  # Options: unet, fpn, deeplabv3
+    shared_encoder: true
+    num_classes_seg: 1
+    num_classes_cls: 4  # low, medium, high, flood
+    pretrained: true
+    seg_loss_weight: 0.5  # Weight for segmentation loss
+    cls_loss_weight: 0.5  # Weight for classification loss
 
 # Training configurations
 training:

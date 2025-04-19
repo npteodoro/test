@@ -9,7 +9,7 @@ def parse_basic_args():
     # Basic arguments
     parser.add_argument('--config', type=str, default='config.yaml', help='Path to config file')
     parser.add_argument('--task', type=str, default='segmentation', 
-                        choices=['segmentation', 'classification'], help='Task type')
+                        choices=['segmentation', 'classification', 'combined'], help='Task type')
     parser.add_argument('--device', type=str, default='cuda', help='Device to use')
     
     # Allow overriding any config value with key-value pairs

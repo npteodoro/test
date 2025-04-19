@@ -1,5 +1,4 @@
 from .base import BaseDataset
-import torch.nn.functional as F
 import torch
 import numpy as np
 import cv2

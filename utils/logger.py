@@ -39,16 +39,17 @@ def setup_logger(config, args, metrics):
         # Create headers if file doesn't exist
         if not os.path.exists(log_file):
             with open(log_file, 'w') as f:
-                headers = ["timestamp", "encoder", "use_mask_as_channel", "augmentation", 
+                headers = ["timestamp", "encoder", "mask_method", "augmentation", 
                            "batch_size", "learning_rate", "accuracy", "f1", "precision", "recall"]
                 f.write(",".join(headers) + "\n")
         
         # Add entry to log
         with open(log_file, 'a') as f:
+            mask_method = config['model'].get('mask_method', 'none')
             values = [
                 timestamp,
                 config['model'].get('encoder', 'default'),
-                str(config['model'].get('use_mask_as_channel', False)),
+                str(mask_method),
                 config['data'].get('augmentation', 'default'),
                 str(config['training']['batch_size']),
                 str(config['training']['learning_rate']),

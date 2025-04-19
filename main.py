@@ -1,6 +1,4 @@
-import torch
 from factories.dataset import create_segmentation_datasets, create_classification_datasets
-from utils.logger import setup_logger
 from utils.config import validate_and_update_config
 from utils.parsing import parse_basic_args, load_and_process_config
 from utils.data import create_data_loader
@@ -41,12 +39,12 @@ def main():
                 config=config['data']
             )
         else:  # classification
-            use_mask = config['data'].get('use_mask_as_channel', False)
+            mask_method = config['data'].get('mask_method', None)
             train_dataset, val_dataset, test_dataset = create_classification_datasets(
                 csv_file=config['data']['csv_file'],
                 root_dir=config['data']['root_dir'],
                 config=config['data'],
-                use_mask=use_mask
+                mask_method=mask_method
             )
             
         # Create data loaders
